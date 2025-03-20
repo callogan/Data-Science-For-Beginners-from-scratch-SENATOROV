@@ -11,7 +11,15 @@ print(number_1)  # вывод на печать уже округленного 
 
 # -
 
+
 def generate_report(rounded_number: float) -> None:
-    """Формирует отчет с использованием числа."""
+    """Формирует отчет с использованием переданного числа.
+
+    Args:
+        rounded_number (float): Округленное число для отчета.
+
+    Returns:
+        None
+    """
     report = f"Отчет о вычислениях (округлено): {rounded_number}"
     print(report)
