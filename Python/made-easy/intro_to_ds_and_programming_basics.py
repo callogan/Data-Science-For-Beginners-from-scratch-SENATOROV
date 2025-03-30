@@ -16,7 +16,7 @@
 # - Data Engineering.
 # - Visualization.
 # - Statistical Analysis.
-# - Artificial Intelligence targets the creation of machines that imitate human actions. It dates back to Alan Turing's early work in 1936 but so far cannot substitute a human totally. 
+# - Artificial Intelligence targets the creation of machines that imitate human actions. It dates back to Alan Turing's early work in 1936 but so far cannot substitute a human totally.
 # - Machine Learning extracts knowledge from data, by the following means: training with a teacher or training without a teacher.
 # - Deep Learning uses multi-layer neural networks to cope with complex tasks where traditional Machine Learning is useless.
 # - Big Data involves dealing with vast amounts of often unstructured data, requiring tools and systems designed to handle heavy workloads efficiently.
@@ -81,7 +81,7 @@
 #
 # ### 1.5.1
 #
-# 1. 
+# 1.
 # - Data Scientist: works with large datasets and applies machine learning and statistical methods to derive insights.
 # - Data Engineer: designs and maintains data infrastructure and optimizes data pipelines.
 # - Data Analyst: analyzes data patterns and creates reports and visualizations to support decision-making.
@@ -91,10 +91,10 @@
 # - Business Analyst: connects data insights with business strategies.
 # - Data/Analytics Manager: leads data teams and manages projects and strategies related to data within an organization.
 # These roles are interrelated, all focused on data processing, analysis, and decision-making, but with different focuses — some prioritize infrastructure (Data Engineer, Data Architect), while others concentrate on analysis and insights (Data Scientist, Data Analyst, Statistician).
-# 2. 
+# 2.
 # * Algorithm: A systematic process to solve a problem step by step.
 # * Flowchart: A graphical representation of an algorithm using standardized symbols.
-# 3. 
+# 3.
 # - Start the program.
 # - Prompt the user to input the Principal Amount (principal).
 # - Prompt the user to input the Rate of Interest (rate).
@@ -183,11 +183,11 @@
 #
 # 1. Artificial Intelligence & Machine Learning (AI/ML), Data Engineering & Cloud Computing, Edge Computing & IoT Analytics, Quantum Computing & Data Science
 # 2. PyCharm, VS Code, Spyder, Eclipse + PyDev, Wing IDE, Jupyter Notebook.
-# 3. 
+# 3.
 # * Compiled Languages: C, C++, Java - known for high speed and efficiency, making them ideal for system software and game development.
 # * Interpreted Languages: Python, JavaScript, Ruby – offer easier debugging and flexibility, commonly used for scripting, automation, and web development.
 # 4. For example, arranging optimal daily time schedule.
-# 5. Repetitive Tasks to Automate: 
+# 5. Repetitive Tasks to Automate:
 # - File organization (sorting, renaming, and categorizing files).
 # - Email filtering and automatic responses.
 # - Web scraping for data extraction.
