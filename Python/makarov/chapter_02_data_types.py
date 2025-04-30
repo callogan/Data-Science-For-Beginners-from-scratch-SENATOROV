@@ -1,24 +1,24 @@
+# ### Работа с числами
+
 """Data types."""
 
 # ## Типы данных в Питоне
 
-# ### Работа с числами
-
-var1 = 25  # целое число (int)
-var2 = 2.5  # число с плавающей точкой (float)
-var3 = 3 + 25j  # комплексное число (complex)
+var1: int = 25  # целое число (int)
+var2: float = 2.5  # число с плавающей точкой (float)
+var3: complex = 3 + 25j  # комплексное число (complex)
 
 # экспоненциальная запись, 2 умножить на 10 в степени 3
-var4 = 2e3
+var4: float = 2e3
 print(var4)
 print(type(var4))
 
 # Арифметические операции
 
 # сложение, вычитание, умножение, деление, возведение в степень
-var_5 = 2
-var_6 = 4
-var_7 = 3
+var_5: int = 2
+var_6: int = 4
+var_7: int = 3
 print(var_5 + 2, var_6 - 2, var_5 * 2, var_6 / 2, var_5**3)
 
 # +
@@ -61,10 +61,10 @@ print(var_6 < var_5 or var_5 == 2)
 
 # +
 # создадим число в десятичной системе
-sample_var_1 = 25
+sample_var_1: int = 25
 
 # переведем в двоичную (binary)
-bin_sample_var_1 = bin(sample_var_1)
+bin_sample_var_1: str = bin(sample_var_1)
 print(bin_sample_var_1)
 
 # переведем обратно в десятичную
@@ -72,10 +72,10 @@ print(int(bin_sample_var_1, 2))
 
 # +
 # создадим число в десятичной системе
-sample_var_2 = 25
+sample_var_2: int = 25
 
 # переведем в восьмеричную (octal)
-oct_sample_var_2 = oct(sample_var_2)
+oct_sample_var_2: str = oct(sample_var_2)
 print(oct_sample_var_2)
 
 # переведем обратно в десятичную
@@ -83,10 +83,10 @@ print(int(oct_sample_var_2, 8))
 
 # +
 # создадим число в десятичной системе
-sample_var_3 = 25
+sample_var_3: int = 25
 
 # переведем в шестандцатеричную (hexadecimal)
-hex_sample_var_3 = hex(sample_var_3)
+hex_sample_var_3: str = hex(sample_var_3)
 print(hex_sample_var_3)
 
 # переведем обратно в десятичную
@@ -95,10 +95,10 @@ print(int(hex_sample_var_3, 16))
 
 # ### Строковые данные
 
-string_1 = "это строка"
-string_2 = "это тоже строка"
+string_1: str = "это строка"
+string_2: str = "это тоже строка"
 
-multi_string = """Мы все учились понемногу
+multi_string: str = """Мы все учились понемногу
 Чему-нибудь и как-нибудь,
 Так воспитаньем, слава богу,
 У нас немудрено блеснуть."""
@@ -112,6 +112,9 @@ len(multi_string)
 
 # +
 # создадим три строки
+lang1: str
+lang2: str
+lang3: str
 lang1, lang2, lang3 = "Программирование", "на", "Питоне"
 
 # соединим с помощью + и добавим пробелы " "
