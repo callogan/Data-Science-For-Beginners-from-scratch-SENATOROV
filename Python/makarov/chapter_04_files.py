@@ -17,14 +17,7 @@
 import os
 
 import pandas as pd
-import seaborn as sns
 from google.colab import files
-
-# импортируем логистическую регрессию из модуля linear_model библиотеки sklearn
-# from sklearn.linear_model import LogisticRegression
-# from sklearn.metrics import accuracy_score, confusion_matrix
-from sklearn.preprocessing import StandardScaler
-
 # -
 
 # создаем объект этого класса, применяем метод .upload()
@@ -65,7 +58,7 @@ for dirpath, _, filenames in os.walk("/content/"):
 # посмотрим на тип значений словаря uploaded
 type(uploaded["test.csv"])
 
-# Пример работы с объектом bytes
+# Пример работы с объектом bytes      
 
 # +
 # обратимся к ключу словаря uploaded и применим метод .decode()
@@ -161,97 +154,43 @@ train.head(3)
 test: pd.DataFrame = pd.read_csv("/content/test.csv")
 test.head(3)
 
-# ### Этап 3. Построение модели и прогноз
+# ### Этап 4. Сохранение нового файла на сервере Google
 
-# #### **Шаг 1**. Обработка и анализ данных
-
-# Исследовательский анализ данных (EDA)
-
-# посмотрим на данные в целом
-train.info()
-
-# посмотрим насколько значим класс билета для выживания пассажира
-# с помощью x и hue мы можем уместить две категориальные переменные
-# на одном графике
-sns.countplot(x="Pclass", hue="Survived", data=train)
-
-# ![image.png](attachment:image.png)
-
-# Пропущенные значения
-
-# выявим пропущенные значения с помощью .isnull()
-# и посчитаем их количество через sum()
-train.isnull().sum()
-
-# переменная Cabin (номер каюты), скорее всего, не является самой важной
-# избавимся от нее с помощью метода .drop()
-# (параметр axis = 1 отвечает за столбцы, inplace = True сохраняет изменения)
-train.drop(columns="Cabin", axis=1, inplace=True)
-
-# а вот Age (возраст) скорее важен, заменим пустые значения
-# средним арифметическим
-train["Age"] = train["Age"].fillna(train["Age"].mean())
-
-# у нас остаются две пустые строки в Embarked, удалим их
-train.dropna(inplace=True)
-
-# посмотрим на результат
-train.isnull().sum()
-
-# Категориальные переменные
-
-# применим one-hot encoding к переменной Sex (пол)
-# с помощью функции pd.get_dummies()
-pd.get_dummies(train["Sex"]).head(3)
-
-# снова скачаем столбец Sex из датасета train в формате датафрейма
-previous: pd.DataFrame = pd.read_csv("/content/train.csv")[["Sex"]]
-previous.head()
-
-# закодируем переменную через 0 и 1
-pd.get_dummies(previous["Sex"], dtype=int).head(3)
-
-# удалим первый столбец, он избыточен
-sex: pd.DataFrame = pd.get_dummies(train["Sex"], drop_first=True)
-sex.head(3)
-
-# сделаем то же самое для переменных Pclass и Embarked
-embarked: pd.DataFrame = pd.get_dummies(train["Embarked'"], drop_first=True)
-pclass: pd.DataFrame = pd.get_dummies(train["Pclass"], drop_first=True)
-
-# присоединим закодированные через one-hot encoding переменные
-# к исходному датафрейму через функцию .concat()
-train = pd.concat([train, pclass, sex, embarked], axis=1)
-train.head(3)
-
-# Отбор признаков
-
-# удалим те столбцы, которые нам теперь не нужны
-id_columns = ["PassengerId", "Name", "Ticket"]
-categorical_columns = ["Pclass", "Sex", "Embarked"]
-columns_to_drop = id_columns + categorical_columns
-train.drop(columns_to_drop, axis=1, inplace=True)
-train.head(3)
-
-# Нормализация данных
+# Пример оформления результата
 
 # +
-# создадим объект этого класса
-scaler: StandardScaler = StandardScaler()
+# файл с примером можно загрузить не с локального компьютера, а из Интернета
+host = "https://www.dmitrymakarov.ru/"
+url = host + "wp-content/uploads/2021/11/titanic_example.csv"
 
-# выберем те столбцы, которые мы хотим масштабировать
-cols_to_scale: list[str] = ["Age", "Fare"]
-
-# рассчитаем среднее арифметическое и СКО для масштабирования данных
-scaler.fit(train[cols_to_scale])
-
-# применим их
-train[cols_to_scale] = scaler.transform(train[cols_to_scale])
-
-# посмотрим на результат
-train.head(3)
+# просто поместим его url в функцию read_csv()
+example = pd.read_csv(url)
+example.head(3)
 # -
 
-# некоторые названия столбцов теперь представляют собой числа,
-# так быть не должно
-train.columns
+# Создание файла с прогнозом
+
+# +
+# возьмем индекс пассажиров из столбца PassengerId тестовой выборки
+ids = test["PassengerId"]
+
+# создадим датафрейм из словаря, в котором
+# первая пара ключа и значения - это id пассажира, вторая -
+# прогноз "на тесте"
+# result = pd.DataFrame({"PassengerId": ids, "Survived": y_pred_test})
+
+# посмотрим, что получилось
+# result.head()
+
+# +
+# создадим новый файл result.csv с помощью to_csv(), удалив при этом индекс
+# result.to_csv('result.csv', index = False)
+
+# файл будет сохранен и, если все пройдет успешно, выведем следующий текст:
+print("Файл успешно сохранился в сессионное хранилище!")
+# -
+
+# ### Этап 5. Скачивание обратно на жесткий диск
+
+# применим метод .download() объекта files
+files.download("/content/result.csv")
