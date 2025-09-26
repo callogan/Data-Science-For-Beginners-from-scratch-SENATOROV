@@ -1,8 +1,11 @@
-"""Chapter 1. Exploratory Data Analysis."""
+"""Chapter 1.
 
-# # Practical Statistics for Data Scientists (Python)
+Exploratory Data Analysis.
+"""
+
+# # Practical Statistics for Data Scientists (2nd edition)
 # # Chapter 1. Exploratory Data Analysis
-# > (c) 2019 Peter C. Bruce, Andrew Bruce, Peter Gedeck
+# > (c) 2020 Peter Bruce, Andrew Bruce, Peter Gedeck
 
 # Import required Python packages.
 
@@ -189,7 +192,7 @@ telecom.corr()
 print(telecom)
 # -
 
-# Next we focus on funds traded on major exchanges (sector == 'etf'). 
+# Next we focus on funds traded on major exchanges (sector == 'etf').
 
 etfs = sp500_px.loc[
     sp500_px.index > "2012-07-01", sp500_sym[sp500_sym["sector"] == "etf"]["symbol"]
@@ -215,6 +218,7 @@ plt.show()
 # -
 
 # The above heatmap works when you have color. For the greyscale images, as used in the book, we need to visualize the direction as well. The following code shows the strength of the correlation using ellipses.
+
 
 # +
 def plot_corr_ellipses(
@@ -306,7 +310,7 @@ kc_tax0 = kc_tax.loc[
 ]
 print(kc_tax0.shape)
 
-# ## Hexagonal binning and Contours 
+# ## Hexagonal binning and Contours
 # ### Plotting numeric versus numeric data
 
 # If the number of data points gets large, scatter plots will no longer be meaningful. Here methods that visualize densities are more useful. The `hexbin` method for _pandas_ data frames is one powerful approach.

@@ -1,8 +1,8 @@
 """Data and Sampling Distributions."""
 
-# # Practical Statistics for Data Scientists (Python)
+# # Practical Statistics for Data Scientists (2nd edition)
 # # Chapter 2. Data and Sampling Distributions
-# > (c) 2019 Peter C. Bruce, Andrew Bruce, Peter Gedeck
+# > (c) 2020 Peter Bruce, Andrew Bruce, Peter Gedeck
 
 # Import required Python packages.
 
