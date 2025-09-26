@@ -10,6 +10,7 @@ from typing import Union, cast
 import numpy as np
 import pandas as pd
 import requests
+from dotenv import load_dotenv
 
 # pylint: disable=too-many-lines
 # -
@@ -898,6 +899,8 @@ pd.merge_asof(
 # ### Метод `.groupby()`
 
 # +
+load_dotenv()
+
 train_csv_url = os.environ.get("TRAIN_CSV_URL", "")
 response = requests.get(train_csv_url)
 titanic = pd.read_csv(io.BytesIO(response.content))
