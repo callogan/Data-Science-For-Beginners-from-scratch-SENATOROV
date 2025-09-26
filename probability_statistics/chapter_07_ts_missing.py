@@ -3,10 +3,16 @@
 # # Пропуски во временных рядах
 
 # +
+import io
+import os
+import random
+
 import numpy as np
 import pandas as pd
-from matplotlib import pyplot as plt
+import requests
 import seaborn as sns
+from dotenv import load_dotenv
+from matplotlib import pyplot as plt
 from pandas import DataFrame
 from scipy.interpolate import CubicSpline
 
@@ -19,10 +25,7 @@ sns.set(rc={"figure.figsize": (10, 6)})
 # ### Подготовка данных
 
 # +
-import io
-import os
-import requests
-
+load_dotenv()
 
 passengers_csv_url = os.environ.get("PASSENGERS_CSV_URL", "")
 births_csv_url = os.environ.get("BIRTHS_CSV_URL", "")
@@ -37,9 +40,6 @@ births = pd.read_csv(io.BytesIO(response_births.content))
 # #### Добавление пропусков
 
 # +
-import random
-
-
 random.seed(1)
 
 # переименуем столбец #Passengers в reference
@@ -76,9 +76,6 @@ passengers.isnull().sum()
 passengers.head(3)
 
 # +
-import random
-
-
 random.seed(1)
 
 births.rename(columns={"Births": "reference"}, inplace=True)
