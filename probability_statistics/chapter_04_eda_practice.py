@@ -17,6 +17,7 @@ import pandas as pd
 import plotly.express as px
 import requests
 import seaborn as sns
+from dotenv import load_dotenv
 import sweetviz as sv
 from matplotlib.axes._axes import _log as matplotlib_axes_logger
 # -
@@ -26,6 +27,8 @@ from matplotlib.axes._axes import _log as matplotlib_axes_logger
 # ### Датасет "Титаник"
 
 # +
+load_dotenv()
+
 train_csv_url = os.environ.get("TRAIN_CSV_URL", "")
 response = requests.get(train_csv_url)
 
@@ -697,7 +700,6 @@ sns.violinplot(x="day", y="total_bill", data=tips);
 
 # #### Логарифмическая шкала
 
-# !!!!!RENAME TO SALES_1
 # соберем данные о продажах
 products = ["Phone", "TV", "Laptop", "Desktop", "Tablet"]
 sales = [800, 4, 550, 500, 3]
@@ -737,7 +739,6 @@ plt.ylim(0.7, 0.73);
 # ### Линейный график
 
 # +
-# !!!!!!! 99 SINGLE LETTER !!!!!!!
 # создадим последовательность от -2пи до 2пи
 # с интервалом 0,1
 a_var = np.arange(-2 * np.pi, 2 * np.pi, 0.1)
@@ -793,7 +794,6 @@ sns.pairplot(
 );
 
 # +
-# !!!!!! 107 SINGLE LETTER !!!!!
 # создадим объект класса PairGrid, в качестве данных передадим ему
 # как количественные, так и категориальные переменные
 b_var = sns.PairGrid(
@@ -891,7 +891,6 @@ comparison.show_notebook()
 
 # ### Стиль графика
 
-# !!!!!!!!!!!!!! 118 SINGLE LETTER !!!!!
 # создадим последовательность для оси x
 c_var = np.linspace(0, 10, 100)
 
@@ -1192,7 +1191,6 @@ ax2.set(
 plt.tight_layout();
 
 # +
-# !!!!!!!!! 143
 # возьмем данные о продажах в четырех магазинах
 sales_2: pd.DataFrame = pd.DataFrame(
     {
@@ -1211,7 +1209,6 @@ sales_2.set_index("year", inplace=True)
 sales_2
 
 # +
-# !!!!!!!!! 144
 # определимся с количеством строк и столбцов
 nrows, ncols = 2, 2
 # создадим счетчик для столбцов
