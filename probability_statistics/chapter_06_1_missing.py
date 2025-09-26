@@ -14,6 +14,7 @@ import numpy as np
 import pandas as pd
 import requests
 import seaborn as sns
+from dotenv import load_dotenv
 from numpy.typing import ArrayLike
 
 # в цикле пройдемся по датасетам с заполненными пропусками
@@ -43,6 +44,8 @@ from sklearn.linear_model import LinearRegression, LogisticRegression
 # from sklearn.linear_model import BayesianRidge
 
 # +
+load_dotenv()
+
 train_csv_url = os.environ.get("TRAIN_CSV_URL", "")
 response = requests.get(train_csv_url)
 
@@ -279,11 +282,9 @@ print(round(median_imputer["Age"].mean(), 1), median_imputer["Age"].median())
 # +
 imp_median = SimpleImputer(strategy="median")
 
-# применим метод .fit_transform() для одновременного обучения 
+# применим метод .fit_transform() для одновременного обучения
 # модели и заполнения пропусков
-median_imputer["Age"] = imp_median.fit_transform(
-    median_imputer[["Age"]]
-)
+median_imputer["Age"] = imp_median.fit_transform(median_imputer[["Age"]])
 
 # убедимся, что пропущенных значений не осталось
 median_imputer.Age.isna().sum()
