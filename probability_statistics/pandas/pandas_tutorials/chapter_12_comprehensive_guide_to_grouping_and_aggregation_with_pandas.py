@@ -10,7 +10,7 @@
 #
 # В этом Блокноте кратко изложены основные функции агрегирования pandas и показаны примеры более сложных настраиваемых агрегаций. Независимо от того, являетесь ли вы начинающим или опытным пользователем pandas, я думаю, вы узнаете что-то новое для себя.
 #
-# Оригниал статьи Криса [тут](https://pbpython.com/groupby-agg.html).
+# Оригинал статьи Криса [тут](https://pbpython.com/groupby-agg.html).
 
 # ## Агрегирование
 
@@ -28,6 +28,8 @@ from functools import partial
 import numpy as np
 import pandas as pd
 import seaborn as sns
+
+# import sidetable
 from scipy.stats import mode, skew, trim_mean
 from sparklines import sparklines
 
@@ -78,7 +80,8 @@ agg_func_math = {
     "fare": ["sum", "mean", "median", "min", "max", "std", "var", "mad", "prod"]
 }
 
-df.groupby(["embark_town"]).agg(agg_func_math).round(2)
+# df.groupby(["embark_town"]).agg(agg_func_math).round(2)
+df.groupby("embark_town")["fare"].apply(lambda x: np.mean(np.abs(x - x.mean())))
 
 # Это все относительно простая математика.
 #
@@ -90,9 +93,9 @@ agg_func_describe = {"fare": ["describe"]}
 
 df.groupby(["embark_town"]).agg(agg_func_describe).round(2)
 
-# ### Подсчет
+# ### Подсчёт
 
-# После базовой математики подсчет (counting) является следующим наиболее распространенным агрегированием, которое я выполняю для сгруппированных данных.
+# После базовой математики подсчёт (counting) является следующим наиболее распространенным агрегированием, которое я выполняю для сгруппированных данных.
 #
 # Он несколько сложнее, чем простая математика. Вот три примера подсчета:
 
@@ -213,8 +216,8 @@ agg_func_custom_count = {
     "embark_town": ["count", "nunique", "size", unique_nan, count_nulls, set]
 }
 
-df.groupby(["deck"]).agg(agg_func_custom_count)
 
+# df.groupby(["deck"]).agg(agg_func_custom_count)
 
 # Если вы хотите рассчитать *90-й процентиль*, используйте [`quantile`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.quantile.html):
 
@@ -320,3 +323,131 @@ df.groupby(["embark_town", "class"]).agg({"fare": "sum"}).assign(
 pd.crosstab(
     df["embark_town"], df["class"], values=df["fare"], aggfunc="sum", normalize=True
 )
+
+# Пока мы говорим о `crosstab` (кросс-таблицах), полезно иметь в виду, что функции агрегации также можно комбинировать со сводными таблицами (pivot tables).
+
+# Вот небольшой пример:
+
+pd.pivot_table(
+    data=df,
+    index=["embark_town"],
+    columns=["class"],
+    aggfunc=agg_func_top_bottom_sum,  # type: ignore
+)
+
+# Иногда необходимо выполнить множество группировок (multiple groupby), чтобы ответить на вопрос. Например, если мы хотим увидеть кумулятивную сумму стоимости билетов, мы можем сгруппировать и агрегировать по городу (town) и классу (class), затем сгруппировать полученный объект и вычислить кумулятивную сумму (cumulative sum):
+
+# +
+# pylint: disable=line-too-long
+
+fare_group = df.groupby(["embark_town", "class"]).agg({"fare": "sum"})
+fare_group
+# -
+
+fare_group = df.groupby(["embark_town", "class"]).agg({"fare": "sum"})
+fare_group
+
+fare_group.groupby(level=0).cumsum()
+
+# Это может быть сложным для понимания. Вот краткое пояснение того, что мы делаем:
+
+# <img src="https://raw.githubusercontent.com/dm-fedorov/pandas_basic/master/pic/multiple-groupby.png" >
+
+# ### Пример с данными о продажах
+#
+# В следующем примере резюмируем ежедневные данные о продажах и преобразуем их в совокупное ежедневное и ежеквартальное представление. 
+#
+# Обратитесь к [статье о Grouper](https://pbpython.com/pandas-grouper-agg.html), если вы не знакомы с использованием метода [`pd.Grouper()`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Grouper.html).
+
+# В этом примере мы хотим включить сумму ежедневных продаж, а также совокупную (cumulative) сумму за квартал:
+
+sales = pd.read_excel(
+    "https://github.com/chris1610/pbpython/blob/master/data/2018_Sales_Total_v2.xlsx?raw=True"
+)
+sales.head()
+
+daily_sales = (
+    sales.groupby([pd.Grouper(key="date", freq="D")])
+    .agg(daily_sales=("ext price", "sum"))
+    .reset_index()
+)
+daily_sales.head()
+
+daily_sales["quarter_sales"] = daily_sales.groupby(
+    pd.Grouper(key="date", freq="Q")
+).agg({"daily_sales": "cumsum"})
+daily_sales.head()
+
+# Чтобы получить хорошее представление о том, что происходит, вам нужно взглянуть на границу квартала (с конца марта по начало апреля):
+
+# <img src="https://raw.githubusercontent.com/dm-fedorov/pandas_basic/master/pic/cumulative_total.png" >
+
+# Если вы хотите просто получить совокупный (cumulative) квартальный итог, вы можете связать несколько функций `groupby`.
+
+# Сначала сгруппируйте ежедневные результаты, затем сгруппируйте эти результаты по кварталам и используйте кумулятивную сумму:
+
+# +
+# веселый пример :)
+
+sales.groupby([pd.Grouper(key="date", freq="D")]).agg(
+    daily_sales=("ext price", "sum")
+).groupby(pd.Grouper(freq="Q")).agg({"daily_sales": "cumsum"}).rename(
+    columns={"daily_sales": "quarterly_sales"}
+)
+# -
+
+# В этом примере я включил именованный подход агрегации (named aggregation approach), чтобы переименовать переменную и уточнить, что теперь это ежедневные продажи. Затем я снова группирую и использую совокупную (cumulative) сумму, чтобы получить текущую сумму за квартал. Наконец, я переименовал столбец в квартальные продажи (quarterly sales).
+#
+# По отзывам, на первый взгляд, это сложно понять. Однако, если выполните по шагам, т.е. построите функцию и будете проверять результаты на каждом шаге, то начнете понимать ее.
+#
+# Не расстраивайтесь!
+
+# ## Сглаживание иерархических индексов столбцов
+
+# По умолчанию pandas в сводном `DataFrame` создает иерархический индекс у столбца:
+
+df.groupby(["embark_town", "class"]).agg({"fare": ["sum", "mean"]}).round()
+
+# В какой-то момент в процессе анализа вы, вероятно, захотите «сгладить» (flatten) столбцы, чтобы получилась одна строка с именами.
+
+# Я обнаружил, что мне лучше всего подходит следующий подход. 
+#
+# Я использую параметр `as_index=False` при группировке, а затем создаю новое имя свернутого (collapsed) столбца.
+#
+# Вот код:
+
+multi_df = df.groupby(["embark_town", "class"], as_index=False).agg(
+    {"fare": ["sum", "mean"]}
+)
+multi_df
+
+multi_df.columns = ["_".join(col).rstrip("_") for col in multi_df.columns.values]
+multi_df.round(2)
+
+# Вот изображение, показывающее, как выглядит сплющенный кадр данных:
+
+# <img src="https://raw.githubusercontent.com/dm-fedorov/pandas_basic/master/pic/column_flatten.png" >
+
+# Я предпочитаю использовать `_` в качестве разделителя, но вы можете использовать другие значения. Просто имейте в виду, что для последующего анализа будет проще, если в именах результирующих столбцов нет пробелов.
+
+# ## Промежуточные итоги
+
+# Если вы хотите добавить промежуточные итоги (subtotal), я рекомендую пакет [`sidetable`](https://github.com/chris1610/sidetable).
+#
+# Инструкция по работе с `sidetable` на русском языке [тут](http://dfedorov.spb.ru/pandas/%D0%A1%D0%B2%D0%BE%D0%B4%D0%BD%D0%B0%D1%8F%20%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0%20%D0%B2%20pandas.html).
+#
+# Вот как вы можете суммировать `fares` по `class`, `embark_town` и `sex` с промежуточным итогом на каждом уровне, а также общим итогом внизу:
+
+# +
+# pip install sidetable
+# -
+
+df.groupby(["class", "embark_town", "sex"]).agg({"fare": "sum"}).stb.subtotal()
+
+# `sidetable` также позволяет настраивать уровни промежуточных итогов и итоговые метки. Обратитесь к [документации пакета](https://github.com/chris1610/sidetable) для получения дополнительных примеров того, как `sidetable` может резюмировать данные.
+
+# ## Резюме
+
+# Спасибо, что прочитали эту статью. Здесь много деталей, но это связано с тем, что существует множество различных применений для группировки и агрегирования данных с помощью pandas. Я надеюсь, что этот пост станет полезным ресурсом, который вы сможете добавить в закладки и вернуться к нему, когда столкнетесь с собственной сложной проблемой.
+#
+# Если у вас есть другие распространенные техники, которые вы часто используете, дайте мне знать в комментариях к [статье](https://pbpython.com/groupby-agg.html). Если я получу что-нибудь полезное, я включу его в этот пост или как обновленную статью.
